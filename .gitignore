@@ -1,0 +1,55 @@
+# Security & Environment Variables
+.env
+.env.local
+.env.development
+.env.production
+secrets.json
+local_settings.py
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+*.db
+
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+venv/
+env/
+.venv/
+.env/
+pip-wheel-metadata/
+
+# Django
+*.log
+staticfiles/
+media/
+
+# Testing & Coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# IDEs & Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db

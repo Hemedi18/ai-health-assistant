@@ -1,0 +1,565 @@
+{% extends 'base.html' %}
+
+{% block title %}Setup Menstrual Cycle Tracker - Health Tracker{% endblock %}
+
+{% block extra_css %}
+<style>
+    .setup-page-wrapper {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .setup-container {
+        max-width: 550px;
+        width: 100%;
+        padding: 2.5rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: slideInUp 0.6s ease-out;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .setup-form {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .setup-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .setup-header h1 {
+        color: #333;
+        margin-bottom: 0.5rem;
+        margin-top: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+    }
+
+    .setup-header p {
+        color: #666;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .disclaimer {
+        background: #f0f4ff;
+        padding: 1.25rem;
+        border-left: 4px solid #667eea;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        animation: slideInUp 0.7s ease-out;
+    }
+
+    .disclaimer p {
+        font-size: 0.85rem;
+        color: #555;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        animation: slideInUp 0.6s ease-out;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #333;
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem 0.875rem;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        background: white;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+
+    .form-group small {
+        display: block;
+        margin-top: 0.4rem;
+        color: #999;
+        font-size: 0.85rem;
+    }
+
+    /* Radio and Checkbox Styling */
+    .form-group .form-check {
+        padding: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .form-group .form-check input[type="radio"],
+    .form-group .form-check input[type="checkbox"] {
+        margin-right: 0.75rem;
+        margin-top: 0.25rem;
+        cursor: pointer;
+        width: 1.25rem;
+        height: 1.25rem;
+        min-width: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .form-group .form-check label {
+        margin-bottom: 0;
+        margin-left: 0.5rem;
+        font-weight: 500;
+        display: inline;
+        cursor: pointer;
+        flex-grow: 1;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .form-group .form-check input[type="radio"]:focus,
+    .form-group .form-check input[type="checkbox"]:focus {
+        outline: 2px solid #667eea;
+        outline-offset: 2px;
+    }
+
+    /* RadioSelect Container */
+    .form-group .form-check-input + label {
+        margin-left: 0.5rem;
+        margin-bottom: 0;
+        display: inline;
+        font-weight: 500;
+    }
+
+    /* Multiple radio/checkbox options */
+    .form-group fieldset {
+        border: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .form-group fieldset ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group fieldset li {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        flex-wrap: nowrap;
+        min-width: 0;
+    }
+
+    .form-group fieldset input[type="radio"],
+    .form-group fieldset input[type="checkbox"] {
+        margin-top: 0.4rem;
+        margin-right: 0.8rem;
+        cursor: pointer;
+        width: 1.25rem;
+        height: 1.25rem;
+        min-width: 1.25rem;
+        max-width: 1.25rem;
+        flex-shrink: 0;
+        accent-color: #667eea;
+    }
+
+    .form-group fieldset label {
+        margin: 0;
+        font-weight: 500;
+        cursor: pointer;
+        display: block;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        flex-grow: 1;
+        line-height: 1.5;
+        font-size: 0.95rem;
+        min-width: 0;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.9rem 2rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        animation: slideInUp 0.8s ease-out;
+        margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .form-errors {
+        background: #ffebee;
+        color: #c62828;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #c62828;
+        animation: slideInUp 0.5s ease-out;
+    }
+
+    .form-errors ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        list-style: disc;
+    }
+
+    .form-errors li {
+        margin: 0.25rem 0;
+        font-size: 0.9rem;
+    }
+
+    .form-errors strong {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .setup-container {
+            padding: 2rem 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .setup-form {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .form-group {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .setup-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .setup-header p {
+            font-size: 0.95rem;
+        }
+
+        .disclaimer {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group fieldset li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+            flex-wrap: nowrap;
+            gap: 0.5rem;
+            width: 100%;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .form-group fieldset input[type="radio"],
+        .form-group fieldset input[type="checkbox"] {
+            margin-top: 0.3rem;
+            margin-right: 0.6rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            min-width: 1.25rem;
+        }
+
+        .form-group fieldset label {
+            font-size: 0.95rem;
+            min-width: 0;
+        }
+
+        .submit-btn {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .setup-page-wrapper {
+            padding: 1rem;
+        }
+
+        .setup-container {
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .setup-form {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .form-group {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .setup-header h1 {
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .setup-header p {
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.7rem 0.75rem;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+
+        /* Mobile radio/checkbox fixes */
+        .form-group fieldset li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.1rem;
+            flex-wrap: nowrap;
+            gap: 0.8rem;
+            width: 100%;
+            padding: 0.6rem 0;
+            box-sizing: border-box;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .form-group fieldset input[type="radio"],
+        .form-group fieldset input[type="checkbox"] {
+            margin-top: 0.4rem;
+            margin-right: 0;
+            width: 1.3rem;
+            height: 1.3rem;
+            min-width: 1.3rem;
+            max-width: 1.3rem;
+            flex-shrink: 0;
+            accent-color: #667eea;
+        }
+
+        .form-group fieldset label {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            word-break: break-word;
+            word-wrap: break-word;
+            min-width: 0;
+        }
+
+        .form-group .form-check {
+            padding: 0.6rem 0;
+        }
+
+        .form-group .form-check input[type="radio"],
+        .form-group .form-check input[type="checkbox"] {
+            width: 1.3rem;
+            height: 1.3rem;
+            margin-right: 0.6rem;
+        }
+
+        .form-group .form-check label {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .submit-btn {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.9rem;
+            margin-top: 0.75rem;
+        }
+
+        .disclaimer p {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="setup-page-wrapper">
+    <div class="setup-container">
+        <div class="setup-header">
+            <h1>🩸 Cycle Tracker</h1>
+            <p>Let's get you started tracking your cycle</p>
+        </div>
+
+        <div class="disclaimer">
+            <p>
+                <strong>📋 Disclaimer:</strong> This tracker is for informational purposes only. 
+                Always consult your healthcare provider for medical concerns.
+            </p>
+        </div>
+
+        {% if form.non_field_errors %}
+        <div class="form-errors">
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form method="post" class="setup-form">
+            {% csrf_token %}
+
+            <!-- Last Period Start Date -->
+            <div class="form-group">
+                <label for="{{ form.last_period_start.id_for_label }}">
+                    📅 Last Period Start Date
+                </label>
+                {{ form.last_period_start }}
+                {% if form.last_period_start.help_text %}
+                    <small>{{ form.last_period_start.help_text|safe }}</small>
+                {% endif %}
+                {% if form.last_period_start.errors %}
+                    <small style="color: #c62828; display: block; margin-top: 0.3rem;">
+                        ⚠️ {{ form.last_period_start.errors.0 }}
+                    </small>
+                {% endif %}
+            </div>
+
+            <!-- Average Cycle Length -->
+            <div class="form-group">
+                <label for="{{ form.avg_cycle_length.id_for_label }}">
+                    📊 Average Cycle Length (Days)
+                </label>
+                {{ form.avg_cycle_length }}
+                {% if form.avg_cycle_length.help_text %}
+                    <small>{{ form.avg_cycle_length.help_text|safe }}</small>
+                {% endif %}
+                {% if form.avg_cycle_length.errors %}
+                    <small style="color: #c62828; display: block; margin-top: 0.3rem;">
+                        ⚠️ {{ form.avg_cycle_length.errors.0 }}
+                    </small>
+                {% endif %}
+            </div>
+
+            <!-- Average Period Length -->
+            <div class="form-group">
+                <label for="{{ form.avg_period_length.id_for_label }}">
+                    🩸 Average Period Length (Days)
+                </label>
+                {{ form.avg_period_length }}
+                {% if form.avg_period_length.help_text %}
+                    <small>{{ form.avg_period_length.help_text|safe }}</small>
+                {% endif %}
+                {% if form.avg_period_length.errors %}
+                    <small style="color: #c62828; display: block; margin-top: 0.3rem;">
+                        ⚠️ {{ form.avg_period_length.errors.0 }}
+                    </small>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="submit-btn">✨ Start Tracking</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Add smooth animations to form
+    document.addEventListener('DOMContentLoaded', () => {
+        const formGroups = document.querySelectorAll('.form-group');
+        formGroups.forEach((group, index) => {
+            group.style.setProperty('--index', index + 2);
+        });
+    });
+</script>
+{% endblock %}

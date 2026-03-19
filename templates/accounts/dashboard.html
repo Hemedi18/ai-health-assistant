@@ -1,0 +1,722 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Health Dashboard - Afya Yako AI{% endblock %}
+
+{% block content %}
+<style>
+    /* AI Chat Promotion Banner */
+    .ai-chat-banner {
+        background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        animation: slideDown 0.6s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .ai-chat-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .ai-chat-content {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .ai-chat-content h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .ai-chat-content p {
+        font-size: 1rem;
+        opacity: 0.95;
+        margin-bottom: 0;
+    }
+
+    .ai-chat-button {
+        background: white;
+        color: #ec4899;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        white-space: nowrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .ai-chat-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .ai-chat-button i {
+        font-size: 1.3rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-header h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-header p {
+        font-size: 1rem;
+        opacity: 0.95;
+    }
+
+    .welcome-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid var(--primary-color);
+        transition: all 0.3s ease;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-box.danger {
+        border-left-color: #dc2626;
+    }
+
+    .stat-box.warning {
+        border-left-color: #f59e0b;
+    }
+
+    .stat-box.success {
+        border-left-color: #059669;
+    }
+
+    .stat-box-title {
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-box-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary-color);
+    }
+
+    .stat-box-icon {
+        font-size: 2.5rem;
+        float: right;
+        opacity: 0.2;
+    }
+
+    .health-alert {
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .health-alert.info {
+        background-color: #dbeafe;
+        border-left: 4px solid #0891b2;
+        color: #0c4a6e;
+    }
+
+    .health-alert.success {
+        background-color: #dcfce7;
+        border-left: 4px solid #059669;
+        color: #15803d;
+    }
+
+    .health-alert.warning {
+        background-color: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        color: #92400e;
+    }
+
+    .health-alert.danger {
+        background-color: #fee2e2;
+        border-left: 4px solid #dc2626;
+        color: #991b1b;
+    }
+
+    .health-alert i {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .dashboard-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .quick-action-btn {
+        display: inline-block;
+        padding: 1rem 1.5rem;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        text-align: center;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .quick-action-btn:hover {
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+        transform: translateY(-3px);
+    }
+
+    .quick-action-btn i {
+        font-size: 1.5rem;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .health-metric {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .metric-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .metric-row:last-child {
+        border-bottom: none;
+    }
+
+    .metric-label {
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .metric-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .progress-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .progress-bar-wrapper {
+        flex: 1;
+        height: 8px;
+        background-color: #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #2563eb, #059669);
+        border-radius: 10px;
+        transition: width 0.3s ease;
+    }
+
+    .progress-value {
+        min-width: 50px;
+        text-align: right;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .goal-card {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .goal-card:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .goal-title {
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+
+    .goal-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin-bottom: 1rem;
+    }
+
+    .recommendation-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+    }
+
+    .recommendation-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .recommendation-title {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .recommendation-text {
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+
+    .appointment-item {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid var(--info-color);
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .appointment-date {
+        background-color: var(--info-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        background-color: #f9fafb;
+        border-radius: 10px;
+        border: 2px dashed #e5e7eb;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        color: #6b7280;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state a {
+        display: inline-block;
+        margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .stat-box {
+            min-width: 150px;
+        }
+
+        .welcome-section {
+            flex-direction: column;
+        }
+
+        .stat-box {
+            width: 100%;
+        }
+
+        .quick-action-btn {
+            width: 100%;
+            margin-right: 0;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- AI Chat Promotion Banner -->
+    <div class="ai-chat-banner">
+        <div class="ai-chat-content">
+            <h2>
+                <i class="fas fa-robot" style="animation: float 3s ease-in-out infinite;"></i>
+                Ask Your AI Health Assistant
+            </h2>
+            <p>Get instant personalized health insights and professional recommendations powered by advanced AI technology.</p>
+        </div>
+        <a href="/chat/" class="ai-chat-button">
+            <i class="fas fa-comments"></i> Chat Now
+        </a>
+    </div>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1>
+            <i class="fas fa-heart"></i> Health Dashboard
+        </h1>
+        <p>Welcome back, {{ user.first_name }}! Here's your health snapshot.</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="welcome-section">
+        {% if latest_vital %}
+        <div class="stat-box">
+            <div class="stat-box-icon"><i class="fas fa-weight"></i></div>
+            <div class="stat-box-title">Latest Weight</div>
+            <div class="stat-box-value">{{ latest_vital.weight }} kg</div>
+        </div>
+        {% endif %}
+
+        {% if today_mood %}
+        <div class="stat-box success">
+            <div class="stat-box-icon"><i class="fas fa-smile"></i></div>
+            <div class="stat-box-title">Today's Mood</div>
+            <div class="stat-box-value">{{ today_mood.get_mood_score_display }}</div>
+        </div>
+        {% endif %}
+
+        {% if today_sleep %}
+        <div class="stat-box">
+            <div class="stat-box-icon"><i class="fas fa-moon"></i></div>
+            <div class="stat-box-title">Sleep Duration</div>
+            <div class="stat-box-value">{{ today_sleep.hours }} hrs</div>
+        </div>
+        {% endif %}
+
+        {% if pending_meds > 0 %}
+        <div class="stat-box warning">
+            <div class="stat-box-icon"><i class="fas fa-pills"></i></div>
+            <div class="stat-box-title">Pending Meds</div>
+            <div class="stat-box-value">{{ pending_meds }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Health Alerts -->
+    {% if latest_vital.blood_pressure_sys >= 140 or latest_vital.blood_pressure_dia >= 90 %}
+    <div class="health-alert warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div>
+            <strong>High Blood Pressure Alert:</strong> Your latest reading shows elevated BP. 
+            Consider consulting with a healthcare provider.
+        </div>
+    </div>
+    {% elif latest_vital %}
+    <div class="health-alert success">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <strong>Great News:</strong> Your blood pressure is in a healthy range. Keep up the good work!
+        </div>
+    </div>
+    {% endif %}
+
+    {% if latest_report %}
+    <div class="health-alert info">
+        <i class="fas fa-info-circle"></i>
+        <div>
+            <strong>Weekly Report Available:</strong> Your latest health report has been generated. 
+            <a href="#reports" style="color: inherit; font-weight: 700;">View Report</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="dashboard-section">
+        <div class="section-title">
+            <i class="fas fa-lightning-bolt"></i> Quick Actions
+        </div>
+        <a href="../../accounts/vitals/" class="quick-action-btn">
+            <i class="fas fa-heart-pulse"></i> Record Vitals
+        </a>
+        
+        <a href="/api/nutrition/" class="quick-action-btn">
+            <i class="fas fa-apple-alt"></i> Log Nutrition
+        </a>
+        <a href="/api/exercises/" class="quick-action-btn">
+            <i class="fas fa-running"></i> Log Exercise
+        </a>
+        <a href="/api/mood/" class="quick-action-btn">
+            <i class="fas fa-face-smile"></i> Track Mood
+        </a>
+        <a href="/api/sleep/" class="quick-action-btn">
+            <i class="fas fa-moon"></i> Log Sleep
+        </a>
+        <a href="/api/medications/" class="quick-action-btn">
+            <i class="fas fa-pills"></i> Medications
+        </a>
+    </div>
+
+    <!-- Today's Metrics -->
+    <div class="dashboard-section">
+        <div class="section-title">
+            <i class="fas fa-chart-line"></i> Today's Metrics
+        </div>
+
+        {% if today_steps %}
+        <div class="health-metric">
+            <div class="metric-row">
+                <span class="metric-label"><i class="fas fa-shoe-prints" style="margin-right: 0.5rem;"></i>Steps</span>
+                <div class="progress-container">
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar-fill" style="width: {% widthratio today_steps.steps 10000 100 %}%"></div>
+                    </div>
+                    <span class="progress-value">{{ today_steps.steps }} / 10000</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="health-metric">
+            <div class="metric-row">
+                <span class="metric-label"><i class="fas fa-droplet" style="margin-right: 0.5rem; color: #0891b2;"></i>Water Intake</span>
+                <div class="progress-container">
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar-fill" style="width: {% widthratio today_water 2000 100 %}%"></div>
+                    </div>
+                    <span class="progress-value">{{ today_water|default:"0" }}ml / 2000ml</span>
+                </div>
+            </div>
+        </div>
+
+        {% if latest_vital %}
+        <div class="health-metric">
+            <div class="metric-row">
+                <span class="metric-label"><i class="fas fa-heart" style="margin-right: 0.5rem; color: #dc2626;"></i>Blood Pressure</span>
+                <span class="metric-value">{{ latest_vital.blood_pressure_sys }}/{{ latest_vital.blood_pressure_dia }} mmHg</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label"><i class="fas fa-heartbeat" style="margin-right: 0.5rem;"></i>Heart Rate</span>
+                <span class="metric-value">{{ latest_vital.heart_rate }} bpm</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-label"><i class="fas fa-weight" style="margin-right: 0.5rem;"></i>BMI</span>
+                <span class="metric-value">{{ latest_vital.bmi|floatformat:1 }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Health Goals -->
+    <div class="dashboard-section">
+        <div class="section-title">
+            <i class="fas fa-target"></i> Health Goals
+        </div>
+        
+        <div class="goal-card">
+            <div class="goal-title">Daily Steps Goal</div>
+            <div class="goal-info">
+                <span>Progress</span>
+                <span>{{ today_steps.steps|default:0 }} / 10,000</span>
+            </div>
+            <div class="progress-bar-wrapper">
+                <div class="progress-bar-fill" style="width: {% if today_steps %}{% widthratio today_steps.steps 10000 100 %}{% else %}0{% endif %}%"></div>
+            </div>
+        </div>
+
+        <div class="goal-card">
+            <div class="goal-title">Water Intake Goal</div>
+            <div class="goal-info">
+                <span>Progress</span>
+                <span>{{ today_water|default:0 }}ml / 2,000ml</span>
+            </div>
+            <div class="progress-bar-wrapper">
+                <div class="progress-bar-fill" style="width: {% if today_water %}{% widthratio today_water 2000 100 %}{% else %}0{% endif %}%"></div>
+            </div>
+        </div>
+
+        <div class="goal-card">
+            <div class="goal-title">Sleep Goal</div>
+            <div class="goal-info">
+                <span>Progress</span>
+                <span>{% if today_sleep %}{{ today_sleep.sleep_duration_hours }}{% else %}0{% endif %} / 8 hours</span>
+            </div>
+            <div class="progress-bar-wrapper">
+                <div class="progress-bar-fill" style="width: {% if today_sleep %}{% widthratio today_sleep.sleep_duration_hours 8 100 %}{% else %}0{% endif %}%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    {% if upcoming_appointments %}
+    <div class="dashboard-section">
+        <div class="section-title">
+            <i class="fas fa-calendar-check"></i> Upcoming Appointments
+        </div>
+        
+        {% for appointment in upcoming_appointments %}
+        <div class="appointment-item">
+            <div>
+                <strong>{{ appointment.type }}</strong><br>
+                <span style="color: #6b7280; font-size: 0.9rem;">
+                    <i class="fas fa-map-marker-alt"></i> {{ appointment.location }}
+                </span>
+            </div>
+            <div class="appointment-date">
+                {{ appointment.appointment_date|date:"M d, Y" }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- AI Recommendations -->
+    <div class="dashboard-section">
+        <div class="section-title">
+            <i class="fas fa-lightbulb"></i> AI Recommendations
+        </div>
+
+        <div class="recommendation-card">
+            <div class="recommendation-icon"><i class="fas fa-apple-alt"></i></div>
+            <div class="recommendation-title">Nutrition Tip</div>
+            <div class="recommendation-text">
+                Increase your fiber intake by including whole grains, fruits, and vegetables in your diet. 
+                Aim for 25-30g of fiber per day for optimal digestive health.
+            </div>
+        </div>
+
+        <div class="recommendation-card" style="background: linear-gradient(135deg, #f59e0b 0%, #dc2626 100%);">
+            <div class="recommendation-icon"><i class="fas fa-running"></i></div>
+            <div class="recommendation-title">Exercise Suggestion</div>
+            <div class="recommendation-text">
+                Try a 30-minute moderate-intensity workout today! This could include brisk walking, 
+                swimming, or cycling to improve cardiovascular health.
+            </div>
+        </div>
+
+        <div class="recommendation-card" style="background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);">
+            <div class="recommendation-icon"><i class="fas fa-brain"></i></div>
+            <div class="recommendation-title">Mental Wellness</div>
+            <div class="recommendation-text">
+                Practice 10 minutes of mindfulness meditation today. This can reduce stress and anxiety 
+                while improving your overall mental well-being.
+            </div>
+        </div>
+    </div>
+
+    <!-- Health Report Summary -->
+    {% if latest_report %}
+    <div class="dashboard-section">
+        <div class="section-title">
+            <i class="fas fa-file-medical"></i> Latest Health Report
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Week of {{ latest_report.generated_at|date:"M d, Y" }}</h5>
+                <p class="card-text">{{ latest_report.summary }}</p>
+                <a href="#reports" class="btn btn-primary">View Full Report</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Disclaimer -->
+    <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.5rem; border-radius: 8px; margin-top: 2rem; color: #92400e;">
+        <strong><i class="fas fa-exclamation-triangle"></i> Important Disclaimer:</strong><br>
+        This dashboard is for health tracking and education purposes only. It is NOT a substitute for professional medical advice. 
+        Always consult with qualified healthcare professionals for diagnosis and treatment.
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .mood-options {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    .mood-radio-label {
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 15px;
+        border: 2px solid #eee;
+        transition: all 0.2s ease;
+        text-align: center;
+        flex: 1;
+        min-width: 80px;
+    }
+    .mood-radio-label:hover {
+        background: #f8f9fa;
+        transform: translateY(-3px);
+    }
+    .btn-check:checked + .mood-radio-label {
+        border-color: var(--primary-color);
+        background: #eff6ff;
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+    .mood-emoji { font-size: 2rem; display: block; margin-bottom: 5px; }
+    
+    input[type=range] {
+        height: 25px;
+        -webkit-appearance: none;
+        margin: 10px 0;
+        width: 100%;
+    }
+    input[type=range]:focus { outline: none; }
+    input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 8px;
+        cursor: pointer;
+        background: #e5e7eb;
+        border-radius: 5px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -6px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="animated-form-card">
+        <div class="form-header-gradient" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+            <div class="action-icon"><i class="fas fa-brain"></i></div>
+            <h2>Track Mood</h2>
+            <p>How are you feeling today?</p>
+        </div>
+        
+        <div class="p-4">
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Render the custom mood radio manually for styling -->
+                <label class="form-label fw-bold mb-3">Select your mood:</label>
+                <div class="mood-options">
+                    {% for radio in form.mood %}
+                    {{ radio.tag }}
+                    <label class="mood-radio-label" for="{{ radio.id_for_label }}">
+                        <span class="mood-emoji">
+                            {% if 'EXCELLENT' in radio.choice_label %}🤩
+                            {% elif 'GOOD' in radio.choice_label %}😊
+                            {% elif 'NEUTRAL' in radio.choice_label %}😐
+                            {% elif 'VERY_POOR' in radio.choice_label %}😫
+                            {% elif 'POOR' in radio.choice_label %}😢
+                            {% else %}🤔
+                            {% endif %}
+                        </span>
+                        <div class="small fw-bold">{{ radio.choice_label }}</div>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <!-- Render other fields normally -->
+                {% for field in form %}
+                    {% if field.name != 'mood' %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<small class="text-muted">{{ field.help_text }}</small>{% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg" style="background-color: #7c3aed; border:none;">
+                        Save Mood
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

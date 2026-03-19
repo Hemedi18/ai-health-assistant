@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark">Habari, {{ user.first_name|default:user.u_phone_number }}! 👋</h2>
+            <p class="text-muted">Here is your health overview for today.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'add_vital' %}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Log Vitals</a>
+            <a href="{% url 'add_nutrition' %}" class="btn btn-success"><i class="fas fa-apple-alt me-2"></i>Log Food</a>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Latest Weight -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="bg-primary bg-opacity-10 p-2 rounded me-3">
+                            <i class="fas fa-weight text-primary fa-lg"></i>
+                        </div>
+                        <h6 class="card-subtitle text-muted">Weight</h6>
+                    </div>
+                    <h3 class="card-title mb-0">{{ latest_vital.weight|default:"--" }} <small class="text-muted fs-6">kg</small></h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blood Pressure -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="bg-danger bg-opacity-10 p-2 rounded me-3">
+                            <i class="fas fa-heartbeat text-danger fa-lg"></i>
+                        </div>
+                        <h6 class="card-subtitle text-muted">Blood Pressure</h6>
+                    </div>
+                    <h3 class="card-title mb-0">
+                        {% if latest_vital %}
+                            {{ latest_vital.blood_pressure_sys }}/{{ latest_vital.blood_pressure_dia }}
+                        {% else %}
+                            --/--
+                        {% endif %}
+                        <small class="text-muted fs-6">mmHg</small>
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mood -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="bg-warning bg-opacity-10 p-2 rounded me-3">
+                            <i class="fas fa-smile text-warning fa-lg"></i>
+                        </div>
+                        <h6 class="card-subtitle text-muted">Today's Mood</h6>
+                    </div>
+                    <h3 class="card-title mb-0">{{ today_mood.mood|default:"Not Logged" }}</h3>
+                    <a href="{% url 'add_mood' %}" class="small text-decoration-none stretched-link">Log Mood &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="bg-info bg-opacity-10 p-2 rounded me-3">
+                            <i class="fas fa-bed text-info fa-lg"></i>
+                        </div>
+                        <h6 class="card-subtitle text-muted">Sleep</h6>
+                    </div>
+                    <h3 class="card-title mb-0">{{ today_sleep.sleep_duration_hours|default:"--" }} <small class="text-muted fs-6">hrs</small></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Graph Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 fw-bold"><i class="fas fa-chart-line me-2 text-primary"></i>Health Trends (Last 10 Records)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="vitalsChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('vitalsChart').getContext('2d');
+    const vitalsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ graph_dates|safe }},
+            datasets: [
+                {
+                    label: 'Weight (kg)',
+                    data: {{ graph_weights|safe }},
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Systolic BP',
+                    data: {{ graph_sys|safe }},
+                    borderColor: '#dc3545',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    tension: 0.3,
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'Diastolic BP',
+                    data: {{ graph_dia|safe }},
+                    borderColor: '#ffc107',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    tension: 0.3,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: { display: true, text: 'Weight (kg)' }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: { drawOnChartArea: false },
+                    title: { display: true, text: 'Blood Pressure (mmHg)' }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

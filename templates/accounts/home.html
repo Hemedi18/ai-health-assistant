@@ -1,0 +1,427 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Afya Yako AI - Landing Page{% endblock %}
+
+{% block content %}
+<style>
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+        color: white;
+        padding: 6rem 0;
+        text-align: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        animation: slideDown 0.8s ease;
+    }
+
+    .hero-content p {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+        animation: slideUp 0.8s ease 0.2s both;
+    }
+
+    .hero-buttons {
+        animation: slideUp 0.8s ease 0.4s both;
+    }
+
+    .hero-buttons .btn {
+        padding: 0.8rem 2.5rem;
+        font-size: 1.1rem;
+        margin: 0 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .btn-hero-primary {
+        background-color: white;
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    .btn-hero-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        color: #1d4ed8;
+    }
+
+    .btn-hero-secondary {
+        background-color: transparent;
+        border: 2px solid white;
+        color: white;
+    }
+
+    .btn-hero-secondary:hover {
+        background-color: white;
+        color: #2563eb;
+        transform: translateY(-3px);
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 6rem 0;
+        background-color: #f9fafb;
+    }
+
+    .features-title {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .features-title h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+
+    .features-title p {
+        font-size: 1.1rem;
+        color: #6b7280;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border-top: 4px solid transparent;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        border-top-color: #2563eb;
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        line-height: 1;
+    }
+
+    .feature-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+        color: #6b7280;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    /* Benefits Section */
+    .benefits-section {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+        color: white;
+    }
+
+    .benefits-title {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .benefits-title h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .benefits-list li {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .benefits-list i {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 6rem 0;
+        text-align: center;
+        background-color: white;
+    }
+
+    .cta-content h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin-bottom: 1rem;
+    }
+
+    .cta-content p {
+        font-size: 1.1rem;
+        color: #6b7280;
+        margin-bottom: 2rem;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        padding: 4rem 0;
+        background-color: #f3f4f6;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2563eb;
+    }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .hero {
+            padding: 3rem 0;
+            min-height: auto;
+        }
+
+        .hero-content h1 {
+            font-size: 2rem;
+        }
+
+        .hero-content p {
+            font-size: 1rem;
+        }
+
+        .features-title h2,
+        .benefits-title h2,
+        .cta-content h2 {
+            font-size: 2rem;
+        }
+
+        .hero-buttons .btn {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.95rem;
+            display: block;
+            margin: 0.5rem auto;
+        }
+
+        .features-section,
+        .benefits-section,
+        .cta-section {
+            padding: 3rem 0;
+        }
+    }
+</style>
+
+<!-- Navigation for Home Page -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #2563eb 0%, #059669 100%); position: sticky; top: 0; z-index: 1000;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <i class="fas fa-heart"></i> Afya Yako AI
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#features">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#benefits">Benefits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-light me-2" href="{% url 'login' %}" style="color: #2563eb;">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-outline-light" href="{% url 'register' %}">Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container hero-content">
+        <h1>{{ tagline }}</h1>
+        <p>Track your health, get AI-powered insights, and live a healthier life</p>
+        <div class="hero-buttons">
+            <a href="{% url 'register' %}" class="btn btn-hero-primary">
+                <i class="fas fa-user-plus"></i> Get Started
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-hero-secondary">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section" id="features">
+    <div class="container">
+        <div class="features-title">
+            <h2>Powerful Features</h2>
+            <p>Everything you need to manage your health</p>
+        </div>
+        <div class="row">
+            {% for feature in features %}
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon">{{ feature.icon }}</div>
+                    <h3>{{ feature.title }}</h3>
+                    <p>{{ feature.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">500K+</div>
+                    <div class="stat-label">Health Records</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">User Satisfaction</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI Support</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section" id="benefits">
+    <div class="container">
+        <div class="benefits-title">
+            <h2>Why Choose Afya Yako AI?</h2>
+            <p>Experience healthcare reimagined</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <ul class="benefits-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Real-time health tracking and monitoring</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>AI-powered personalized recommendations</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Medication reminders and management</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Emergency health alerts and protocols</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <ul class="benefits-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Weekly health reports and insights</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Mental health and wellness tracking</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>100% data privacy and security</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Trusted by healthcare professionals</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container cta-content">
+        <h2>Ready to Take Control of Your Health?</h2>
+        <p>Join thousands of users who are already using Afya Yako AI to improve their health</p>
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-arrow-right"></i> Start Your Journey Now
+        </a>
+    </div>
+</section>
+{% endblock %}

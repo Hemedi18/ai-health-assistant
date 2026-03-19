@@ -1,0 +1,447 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - Afya Yako AI{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        margin: 0 auto 1rem;
+        border: 3px solid white;
+    }
+
+    .profile-header h1 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-header p {
+        font-size: 1rem;
+        opacity: 0.95;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+    }
+
+    .profile-card h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .profile-card h2 i {
+        color: #2563eb;
+        font-size: 1.3rem;
+    }
+
+    .profile-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item {
+        background: #f9fafb;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid #2563eb;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        word-break: break-all;
+    }
+
+    .form-section {
+        background: #f9fafb;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        justify-content: center;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #2563eb, #059669);
+        color: white;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e5e7eb;
+        color: #1f2937;
+    }
+
+    .btn-secondary:hover {
+        background: #d1d5db;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .stat-item {
+        background: linear-gradient(135deg, #e0f2fe, #f0fdf4);
+        padding: 1.25rem;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #e5e7eb;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #2563eb;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: #6b7280;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid;
+    }
+
+    .alert-success {
+        background: #dcfce7;
+        border-color: #22c55e;
+        color: #166534;
+    }
+
+    .alert-error {
+        background: #fee2e2;
+        border-color: #ef4444;
+        color: #991b1b;
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            margin: 1rem 0;
+        }
+
+        .profile-card {
+            padding: 1.5rem;
+        }
+
+        .profile-info {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-primary, .btn-secondary {
+            width: 100%;
+        }
+    }
+
+    .readonly-badge {
+        display: inline-block;
+        background: #e5e7eb;
+        color: #6b7280;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+</style>
+
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <h1>{{ user.u_phone_number }}</h1>
+        <p>Member since {{ user.date_joined|date:"F d, Y" }}</p>
+    </div>
+
+    <!-- Alerts -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Account Information -->
+    <div class="profile-card">
+        <h2>
+            <i class="fas fa-lock"></i>
+            Account Information
+            <span class="readonly-badge">Read-only</span>
+        </h2>
+
+        <div class="profile-info">
+            <div class="info-item">
+                <div class="info-label">Phone Number</div>
+                <div class="info-value">{{ user.u_phone_number }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Account Status</div>
+                <div class="info-value">
+                    {% if user.is_active %}
+                        <span style="color: #10b981;">✓ Active</span>
+                    {% else %}
+                        <span style="color: #dc2626;">✗ Inactive</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Membership</div>
+                <div class="info-value">
+                    {% if user.is_premium %}
+                        <span style="color: #f59e0b;">💎 Premium</span>
+                    {% else %}
+                        <span style="color: #2563eb;">✓ Free</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <div class="info-item">
+                <div class="info-label">Member Since</div>
+                <div class="info-value">{{ user.date_joined|date:"M d, Y" }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Last Joined</div>
+                <div class="info-value">{{ user.date_joined|date:"h:i A" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Health Profile -->
+    {% if profile %}
+    <div class="profile-card">
+        <h2>
+            <i class="fas fa-heartbeat"></i>
+            Health Profile
+        </h2>
+
+        <div class="profile-info">
+            <div class="info-item">
+                <div class="info-label">Health Focus</div>
+                <div class="info-value">
+                    {% if profile.health_focus == 'MATERNAL' %}
+                        👩‍👧 Maternal Health
+                    {% elif profile.health_focus == 'CHILD' %}
+                        👧 Child Health
+                    {% else %}
+                        ✓ General Health
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Date of Birth</div>
+                <div class="info-value">{{ profile.date_of_birth|date:"M d, Y"|default:"Not set" }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">Blood Group</div>
+                <div class="info-value">{{ profile.blood_group|default:"Not set" }}</div>
+            </div>
+        </div>
+
+        <!-- Health Statistics -->
+        {% if vitals_count or mood_count or sleep_count %}
+        <div class="stats-grid">
+            {% if vitals_count %}
+            <div class="stat-item">
+                <div class="stat-value">{{ vitals_count }}</div>
+                <div class="stat-label">Health Records</div>
+            </div>
+            {% endif %}
+
+            {% if mood_count %}
+            <div class="stat-item">
+                <div class="stat-value">{{ mood_count }}</div>
+                <div class="stat-label">Mood Entries</div>
+            </div>
+            {% endif %}
+
+            {% if sleep_count %}
+            <div class="stat-item">
+                <div class="stat-value">{{ sleep_count }}</div>
+                <div class="stat-label">Sleep Records</div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="profile-card">
+        <h2>
+            <i class="fas fa-heartbeat"></i>
+            Health Profile
+        </h2>
+        <p style="color: #6b7280; text-align: center;">
+            <i class="fas fa-info-circle"></i> No health profile created yet.
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="profile-card">
+        <h2>
+            <i class="fas fa-lightning-bolt"></i>
+            Quick Actions
+        </h2>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+            <a href="{% url 'dashboard' %}" class="btn-primary" style="padding: 1rem; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="/chat/" class="btn-primary" style="padding: 1rem; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="fas fa-robot"></i> AI Chat
+            </a>
+            <a href="{% url 'health_summary' %}" class="btn-primary" style="padding: 1rem; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="fas fa-file-medical"></i> Health Report
+            </a>
+            <a href="{% url 'logout' %}" class="btn-secondary" style="padding: 1rem; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Privacy Notice -->
+    <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 1rem; border-radius: 10px; margin-top: 2rem; margin-bottom: 2rem; color: #166534;">
+        <i class="fas fa-shield-alt"></i>
+        <strong>Privacy Notice:</strong> Your health information is encrypted and protected with industry-standard security. We never share your data with third parties.
+    </div>
+</div>
+
+<script>
+    // Auto-hide alerts after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.transition = 'opacity 0.3s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        });
+    });
+</script>
+{% endblock %}
